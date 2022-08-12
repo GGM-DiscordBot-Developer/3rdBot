@@ -6,7 +6,7 @@ client.on('ready', () => {
     client.user.setActivity({ name : "!3기생", type : ActivityType.Playing });
 });
 
-const iconURL = "https://cdn.discordapp.com/attachments/953627968222138389/1007704753205157978/ggmboticon.png";
+const iconURL = "https://cdn.discordapp.com/icons/936986922130223105/a2aecb9c4c65f0839b94869228a80fe5.webp?size=100%5C";
 
 var helpEmbed = new EmbedBuilder()
 .setColor(`#00A651`)
