@@ -44,26 +44,8 @@ client.on('messageCreate', msg => {
     var date = new Date();
 
     if(dmInfo.onDM && !msg.author.bot && (msg.channel == dmInfo.channel))
-    {
-        const studentData = msg.content.split(' ');
-        if(studentData.length != 4)
-        {
-            msg.reply("올바른 형식의 정보를 입력해주세요.");
-            return;
-        }
+        checkDM(msg);
 
-        studentFile[msg.author.id] = {
-            name : studentData[0],
-            stuNum : studentData[1],
-            phoneNum : studentData[2],
-            birthday : `${(studentData[3][0] + studentData[3][1])}월 ${(studentData[3][2] + studentData[3][3])}일`
-        };
-        fs.writeFileSync('./studentData.json', JSON.stringify(studentFile));
-        msg.channel.send({ embeds : [SetInfoEmbed(studentFile[msg.author.id])]});
-        if(waitChannel.length >= 1) waitChannel.forEach(channel => channel.send("학생정보 등록이 완료되었습니다."));
-        // infoEmbed.data.fields = [];
-        dmInfo.onDM = false;
-    }
     if(!msg.content.startsWith('!')) return;
 
     const args = msg.content.split('!')[1].split(' ');
@@ -73,6 +55,82 @@ client.on('messageCreate', msg => {
         case '3기생':
             msg.channel.send({ embeds : [helpEmbed] });
             break;
+        case '학생등록':
+            if(studentFile[msg.author.id] != undefined) 
+                msg.reply("이미 등록된 디스코드 계정입니다.");
+            else
+                setStudent(msg, date);
+            break;
+        case '학생조회':
+            studentRequest(msg, args);
+            break;
+        case '학생수정':
+            if(studentFile[msg.author.id] == undefined)
+                msg.reply("등록되어있지 않은 계정입니다.");
+            else
+                setStudent(msg, args);
+            break;
+        case '학생삭제':
+            if(studentFile[msg.author.id] == undefined)
+                msg.reply("등록되어있지 않은 계정입니다.");
+            else 
+            {
+                studentFile[msg.author.id] = undefined;
+                fs.writeFileSync('./studentData.json', JSON.stringify(studentFile));
+            }
+            break;
+    }
+});
+
+const checkDM = msg => {
+    const studentData = msg.content.split(' ');
+    if (studentData.length != 4) {
+        msg.reply("올바른 형식의 정보를 입력해주세요.");
+        return;
+    }
+
+    studentFile[msg.author.id] = {
+        name: studentData[0],
+        stuNum: studentData[1],
+        phoneNum: studentData[2],
+        birthday: `${(studentData[3][0] + studentData[3][1])}월 ${(studentData[3][2] + studentData[3][3])}일`,
+        vip: undefined
+    };
+    fs.writeFileSync('./studentData.json', JSON.stringify(studentFile));
+    msg.channel.send({ embeds: [SetInfoEmbed(studentFile[msg.author.id])] });
+    if (waitChannel.length >= 1) waitChannel.forEach(channel => channel.send("학생정보 등록이 완료되었습니다."));
+    // infoEmbed.data.fields = [];
+    dmInfo.onDM = false;
+}
+
+const setStudent = (msg, date) => {
+    if (dmInfo.onDM) {
+        if (((date.getMinutes() * 60 + date.getSeconds()) - (dmInfo.startTime.getMinutes() * 60 + dmInfo.startTime.getSeconds())) > 30) {
+            dmInfo.channel.send("학생등록 시간이 초과되었습니다.");
+            msg.author.createDM().then(dmChannel => {
+                dmChannel.send({ embeds: [exampleEmbed] });
+                dmInfo.onDM = true;
+                dmInfo.channel = dmChannel;
+                dmInfo.startTime = date;
+            });
+            return;
+        }
+        msg.reply("다른 사람이 등록을 진행중입니다. 잠시만 기다려주세요.");
+        if (waitChannel.indexOf(msg.channel) == -1)
+            waitChannel.push(msg.channel);
+        return;
+    }
+    msg.author.createDM().then(dmChannel => {
+        dmChannel.send({ embeds: [exampleEmbed] });
+        dmInfo.onDM = true;
+        dmInfo.channel = dmChannel;
+        dmInfo.startTime = date;
+    });
+}
+
+const studentRequest = (msg, args) => {
+    switch(args[0])
+    {
         case '학생등록':
             if(studentFile[msg.author.id] != undefined) 
             {
@@ -167,17 +225,19 @@ client.on('messageCreate', msg => {
             });
             break;
     }
-});
+}
 
 const SetInfoEmbed = stuData => {
-    infoEmbed
-    .setTitle(`${stuData.name}님의 정보`)
-    .setFields(
+    if(stuData.vip != undefined)
+        infoEmbed.setTitle(`:crown: ${stuData.vip}님의 정보`);
+    else
+        infoEmbed.setTitle(`${stuData.name}님의 정보`);
+    infoEmbed.setFields(
         { name : "이름", value : stuData.name },
         { name : "학번", value : stuData.stuNum },
         { name : "전화번호", value : stuData.phoneNum },
         { name : "생일", value : stuData.birthday }
-    )
+    );
     return infoEmbed;
 }
 
