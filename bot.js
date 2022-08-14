@@ -89,6 +89,11 @@ const checkDM = msg => {
         return;
     }
 
+    if(studentData[0].length > 3) {
+        msg.reply("3글자 이내의 이름을 입력해주세요.");
+        return;
+    }
+
     studentFile[msg.author.id] = {
         name: studentData[0],
         stuNum: studentData[1],
