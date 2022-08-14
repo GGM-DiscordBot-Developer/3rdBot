@@ -14,9 +14,9 @@ var helpEmbed = new EmbedBuilder()
 .setFooter({ text : "Made by DevSeok & SEH00N", iconURL : iconURL })
 .setFields(
     { name : "!3기생", value : "명령어를 알려줍니다." },
-    { name : "!학생조회 *학생이름*", value : "해당 이름을 가진 모든 학생을 조회합니다." },
-    { name : "!학생등록", value : "학생정보를 등록합니다." },
-    { name : "!학생수정 ", value : "기능 준비중입니다." },
+    { name : "!학생조회 [학생이름]", value : "해당 이름을 가진 모든 학생을 조회합니다." },
+    { name : "!학생등록", value : "자신의 학생정보를 등록합니다." },
+    { name : "!학생수정 ", value : "자신의 학생정보를 수정합니다." },
     { name : "!학생삭제 ", value : "자신의 학생정보를 삭제합니다." }
 );
 
