@@ -56,7 +56,8 @@ client.on('messageCreate', msg => {
             name : studentData[0],
             stuNum : studentData[1],
             phoneNum : studentData[2],
-            birthday : `${(studentData[3][0] + studentData[3][1])}월 ${(studentData[3][2] + studentData[3][3])}일`
+            birthday : `${(studentData[3][0] + studentData[3][1])}월 ${(studentData[3][2] + studentData[3][3])}일`,
+            vip : undefined
         };
         fs.writeFileSync('./studentData.json', JSON.stringify(studentFile));
         msg.channel.send({ embeds : [SetInfoEmbed(studentFile[msg.author.id])]});
@@ -170,14 +171,16 @@ client.on('messageCreate', msg => {
 });
 
 const SetInfoEmbed = stuData => {
-    infoEmbed
-    .setTitle(`${stuData.name}님의 정보`)
-    .setFields(
+    if(stuData.vip != undefined)
+        infoEmbed.setTitle(`:crown: ${stuData.vip}님의 정보`);
+    else
+        infoEmbed.setTitle(`${stuData.name}님의 정보`);
+    infoEmbed.setFields(
         { name : "이름", value : stuData.name },
         { name : "학번", value : stuData.stuNum },
         { name : "전화번호", value : stuData.phoneNum },
         { name : "생일", value : stuData.birthday }
-    )
+    );
     return infoEmbed;
 }
 
