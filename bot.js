@@ -150,7 +150,7 @@ const studentRequest = (msg, args) => {
                     });
                     return;
                 }
-                msg.reply("다른 사람이 등록을 진행중입니다. 잠시만 기다려주세요.");
+                msg.reply("다른 사람이 등록 또는 수정을 진행중입니다. 잠시만 기다려주세요.");
                 if(waitChannel.indexOf(msg.channel) == -1)
                     waitChannel.push(msg.channel);
                 return;
@@ -212,7 +212,7 @@ const studentRequest = (msg, args) => {
                     });
                     return;
                 }
-                msg.reply("다른 사람이 등록을 진행중입니다. 잠시만 기다려주세요.");
+                msg.reply("다른 사람이 등록 또는 수정을 진행중입니다. 잠시만 기다려주세요.");
                 if(waitChannel.indexOf(msg.channel) == -1)
                     waitChannel.push(msg.channel);
                 return;
