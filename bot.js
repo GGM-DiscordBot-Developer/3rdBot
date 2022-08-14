@@ -141,19 +141,30 @@ client.on('messageCreate', msg => {
                 msg.reply("등록되어있지 않은 계정입니다.");
                 return;
             }
-            if (((date.getMinutes() * 60 + date.getSeconds()) - (dmInfo.startTime.getMinutes() * 60 + dmInfo.startTime.getSeconds())) > 30) {
-                dmInfo.channel.send("학생등록 시간이 초과되었습니다.");
-                msg.author.createDM().then(dmChannel => {
-                    dmChannel.send({ embeds: [exampleEmbed] });
-                    dmInfo.onDM = true;
-                    dmInfo.channel = dmChannel;
-                    dmInfo.startTime = date;
-                });
+            if(dmInfo.onDM) 
+            {
+                if(((date.getMinutes() * 60 + date.getSeconds()) - (dmInfo.startTime.getMinutes() * 60 + dmInfo.startTime.getSeconds())) > 30)
+                {
+                    dmInfo.channel.send("학생등록 시간이 초과되었습니다.");
+                    msg.author.createDM().then(dmChannel => {
+                        dmChannel.send({ embeds : [exampleEmbed]});
+                        dmInfo.onDM = true;
+                        dmInfo.channel = dmChannel;
+                        dmInfo.startTime = date;
+                    });
+                    return;
+                }
+                msg.reply("다른 사람이 등록을 진행중입니다. 잠시만 기다려주세요.");
+                if(waitChannel.indexOf(msg.channel) == -1)
+                    waitChannel.push(msg.channel);
                 return;
             }
-            msg.reply("다른 사람이 등록을 진행중입니다. 잠시만 기다려주세요.");
-            if (waitChannel.indexOf(msg.channel) == -1)
-                waitChannel.push(msg.channel);
+            msg.author.createDM().then(dmChannel => {
+                dmChannel.send({ embeds : [exampleEmbed]});
+                dmInfo.onDM = true;
+                dmInfo.channel = dmChannel;
+                dmInfo.startTime = date;
+            });
             break;
     }
 });
