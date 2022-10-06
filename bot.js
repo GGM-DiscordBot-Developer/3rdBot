@@ -1,6 +1,6 @@
 const fs = require('fs');
-const { Client, GatewayIntentBits, EmbedBuilder, ActivityType, DMChannel } = require('discord.js');
-const client = new Client({intents : [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMessages, GatewayIntentBits.MessageContent, GatewayIntentBits.DirectMessages]});
+const { Client, GatewayIntentBits, EmbedBuilder, ActivityType, IntentsBitField } = require('discord.js');
+const client = new Client({intents : [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMessages, GatewayIntentBits.MessageContent, IntentsBitField.Flags.DirectMessages]});
 
 client.on('ready', () => {
     client.user.setActivity({ name : "!3기생", type : ActivityType.Playing });
